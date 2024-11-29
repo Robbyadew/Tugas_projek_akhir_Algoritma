@@ -1,0 +1,91 @@
+class Mahasiswa:
+    def __init__(self, nama: str, nim: str, nilai_akhir: float = 0.0):
+        self.nama = nama
+        self.nim = nim
+        self.nilai_akhir = nilai_akhir
+
+    def tambah_nilai(self, nilai: float):
+        if nilai < 0:
+            raise ValueError("Nilai tidak boleh negatif.")
+        self.nilai_akhir += nilai
+
+    def info_mahasiswa(self):
+        return f"Nama: {self.nama}, NIM: {self.nim}, Nilai Akhir: {self.nilai_akhir:.2f}"
+
+
+daftar_mahasiswa = []
+dict_mahasiswa = {}
+
+
+def tampilkan_semua_mahasiswa():
+    if not daftar_mahasiswa:
+        print("Tidak ada data mahasiswa.")
+    else:
+        print(" Daftar Mahasiswa ")
+        for mahasiswa in daftar_mahasiswa:
+            print(mahasiswa.info_mahasiswa())
+
+
+def cari_mahasiswa(nim: str):
+    try:
+        mahasiswa = dict_mahasiswa[nim]
+        print(" Informasi Mahasiswa ")
+        print(mahasiswa.info_mahasiswa())
+    except KeyError:
+        print(f"Error: Mahasiswa dengan NIM {nim} tidak ditemukan.")
+
+
+def menu():
+    while True:
+        print("Program Manajemen Akun Mahasiswa :\n")
+        print("1. Tambah Mahasiswa Baru")
+        print("2. Update Nilai Mahasiswa")
+        print("3. Tampilkan Semua Mahasiswa")
+        print("4. Cari Mahasiswa Berdasarkan NIM")
+        print("5. Keluar\n")
+        pilihan = input("Pilih menu (1-5) : ")
+
+        if pilihan == "1":
+            try:
+                nama = input("Masukkan nama mahasiswa : ")
+                nim = input("Masukkan NIM mahasiswa : ")
+                if nim in dict_mahasiswa:
+                    print("Error: Mahasiswa dengan NIM ini sudah terdaftar.")
+                    continue
+                nilai_awal = float(input("Masukkan nilai awal mahasiswa : "))
+                mahasiswa = Mahasiswa(nama, nim, nilai_awal)
+                daftar_mahasiswa.append(mahasiswa)
+                dict_mahasiswa[nim] = mahasiswa
+                print("Mahasiswa berhasil ditambahkan.")
+            except ValueError:
+                print("Error: Nilai harus berupa angka.")
+
+        elif pilihan == "2":
+            try:
+                nim = input("Masukkan NIM mahasiswa : ")
+                mahasiswa = dict_mahasiswa[nim]
+                nilai_tambah = float(input("Masukkan nilai yang ingin ditambahkan : "))
+                mahasiswa.tambah_nilai(nilai_tambah)
+                print("Nilai berhasil diperbarui.")
+            except KeyError:
+                print(f"Error: Mahasiswa dengan NIM {nim} tidak ditemukan.")
+            except ValueError as e:
+                print(f"Error: {e}")
+
+        elif pilihan == "3":
+            tampilkan_semua_mahasiswa()
+
+        elif pilihan == "4":
+            nim = input("Masukkan NIM mahasiswa : ")
+            cari_mahasiswa(nim)
+
+        elif pilihan == "5":
+            print("Program Selesai.")
+            break
+
+        else:
+            print("Pilihan tidak valid. Silakan coba lagi.")
+
+
+if __name__ == "__main__":
+    menu()
